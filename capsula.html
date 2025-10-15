@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cápsula do Tempo — Norberto & Letícia</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <meta name="theme-color" content="#121016" />
+  <style>
+    .capsula-header{ padding:56px 0 24px; text-align:center; position:relative; }
+    .capsula-header h1{ font-size:clamp(32px,4.5vw,56px); }
+    .capsula-header p{ margin:8px auto 0; max-width:780px; }
+    .badge{ display:inline-block; margin-top:12px; padding:8px 14px; border-radius:999px;
+            border:1px solid #3a3246; background:#1a1622; color:#f6f2f7; }
+    .timeline{ margin:26px auto 10px; width:min(1000px,90%); display:grid; gap:16px; }
+    .t-card{ background:#1d1926; border:1px solid #3a3246; border-radius:16px; padding:16px; box-shadow:var(--shadow);}
+    .t-card h3{ color:var(--accent); margin-bottom:6px; }
+    .grid-fotos{ width:min(1000px,90%); margin:12px auto 40px; display:grid; gap:12px; grid-template-columns:repeat(3,1fr); }
+    @media (max-width:900px){ .grid-fotos{ grid-template-columns:repeat(2,1fr);} }
+    @media (max-width:600px){ .grid-fotos{ grid-template-columns:1fr;} }
+    .footer-actions{ text-align:center; margin:22px 0 40px; }
+  </style>
+</head>
+<body>
+  <div class="hearts" aria-hidden="true"></div>
+
+  <section class="capsula-header fade-in">
+    <div class="container">
+      <h1>Cápsula do Tempo</h1>
