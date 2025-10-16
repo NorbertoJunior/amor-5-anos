@@ -1,0 +1,11 @@
+# Ignorar arquivos de sistema
+Thumbs.db
+.DS_Store
+
+# Ignorar cache e temporários
+node_modules/
+dist/
+.vscode/
+
+# NÃO ignorar a pasta de áudio!
+!assets/audio/
