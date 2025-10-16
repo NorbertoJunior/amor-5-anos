@@ -5,62 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Norberto & Letícia — 5 anos 💘</title>
 
-  <!-- FAVICONS -->
+  <!-- FAVICON -->
   <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
-  <!-- PNGs (opcional; se ainda não tiver, pode deixar só o SVG e adicionar depois) -->
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/favicon-192.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
   <meta name="theme-color" content="#121016" />
 
-  <!-- FONTS & CSS -->
+  <!-- FONTES -->
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 
-  <!-- OPEN GRAPH / WHATSAPP / INSTAGRAM / FACEBOOK -->
-  <meta property="og:type" content="website">
+  <!-- META -->
   <meta property="og:title" content="Norberto & Letícia — 5 anos 💘">
   <meta property="og:description" content="Uma surpresa do nosso amor: quiz, dedicatória e cápsula do tempo.">
-  <!-- Depois do deploy na Vercel, troque SEU-DOMINIO pelo seu domínio real -->
-  <meta property="og:url" content="https://SEU-DOMINIO.vercel.app/">
-  <meta property="og:image" content="https://SEU-DOMINIO.vercel.app/assets/share.jpg">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-
-  <!-- TWITTER CARD -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Norberto & Letícia — 5 anos 💘">
-  <meta name="twitter:description" content="Uma surpresa do nosso amor: quiz, dedicatória e cápsula do tempo.">
-  <meta name="twitter:image" content="https://SEU-DOMINIO.vercel.app/assets/share.jpg">
+  <meta property="og:image" content="https://norbertoeleticia.vercel.app/assets/share.jpg">
 </head>
-<body>
-  <div class="hearts" aria-hidden="true"></div>
 
-  <!-- CAPA -->
+<body>
   <header class="hero fade-in" id="section-hero">
     <div class="container">
-      <h1 class="slide-up">Para <span class="highlight">Letícia</span>, meu amor</h1>
+      <h1 class="slide-up">
+        Para <span class="highlight">Letícia</span>, meu amor
+        <span class="heart">❤️</span>
+      </h1>
       <p class="subtitle slide-up delay-1">
         5 anos que transformaram quem eu sou. Obrigado por cada riso, cada abraço e cada amanhecer ao seu lado. 💞
       </p>
+      <p class="nickname slide-up delay-1"><em>Let bananinha, meu amor.</em> 🍌💛</p>
 
-      <!-- CONTAGEM DE DIAS -->
       <div class="counter slide-up delay-2">
         <div>Começamos em: <strong>17/10/2020</strong></div>
         <div class="days"><span id="daysCount">0</span> dias juntos</div>
       </div>
 
-      <!-- PLAYER -->
+      <!-- 🎵 PLAYER -->
       <div class="player slide-up delay-2">
+        <audio id="bgAudio" preload="metadata" loop>
+          <source src="assets/audio/i_wanna_be_yours.mp3" type="audio/mpeg">
+        </audio>
         <button id="btnPlay" class="btn-secondary">▶️ Tocar música</button>
         <small>I Wanna Be Yours — Arctic Monkeys</small>
-        <!-- Fallback: escolher arquivo local se não achar em assets/audio -->
-        <div style="margin-top:8px">
-          <label class="btn-ghost" style="display:inline-block; padding:8px 14px; cursor:pointer">
-            📁 Selecionar música do computador
-            <input id="filePicker" type="file" accept="audio/*" style="display:none">
-          </label>
-        </div>
       </div>
 
       <button class="btn-primary slide-up delay-3" id="btnStart">Começar o Quiz</button>
@@ -103,88 +85,33 @@
     <div class="container">
       <h2>Para sempre nós dois</h2>
       <p class="dedic-intro">
-        Parabéns, meu amor! Você acertou tudo 💘
-        Esta é a nossa pequena cápsula do tempo, um pedacinho do que vivemos em 5 anos.
+        Parabéns, meu amor! Você acertou tudo 💘 Esta é a nossa cápsula do tempo — um pedacinho do que vivemos em 5 anos.
       </p>
 
-      <!-- Galeria criada via JS (aceita .jpeg/.jpg/.png/.webp) -->
       <div id="galeriaDedicatoria" class="galeria"></div>
-
-      <div class="paragrafos">
-        <article>
-          <h3>1º Ano</h3>
-          <p>
-            O começo de tudo. Entre tanto tempo em segredo, finalmente assumimos
-            nosso amor pro mundo. E desde então, tudo tem sido mais bonito, leve
-            e verdadeiro ao seu lado.
-          </p>
-        </article>
-
-        <article>
-          <h3>2º Ano</h3>
-          <p>
-            Crescemos juntos. Cada desafio nos aproximou, e cada vitória teve outro
-            brilho com você de mãos dadas comigo.
-          </p>
-        </article>
-
-        <article>
-          <h3>3º Ano</h3>
-          <p>
-            Descobrimos nossos jeitos, nossos ritmos, nossos sonhos. E que sorte a minha:
-            todos eles começaram a ter o seu nome no meio.
-          </p>
-        </article>
-
-        <article>
-          <h3>4º Ano</h3>
-          <p>
-            O mundo lá fora muda, mas aqui dentro a certeza só aumenta:
-            amor é construir, cuidar e escolher a mesma pessoa todos os dias.
-          </p>
-        </article>
-
-        <article>
-          <h3>5º Ano</h3>
-          <p>
-            Hoje celebro você, nós e o que ainda vamos viver.
-            Viajar o mundo, sonhar alto e voltar pro abraço de sempre — nosso lugar favorito.
-            Este é o quinto ano do resto de nossas vidas juntos. ❤️
-          </p>
-        </article>
-      </div>
 
       <footer class="assinatura">
         <p>Feito com todo meu amor, <strong>Norberto</strong> — para <strong>Letícia</strong> ✨</p>
         <button class="btn-primary" id="btnCapsula">Ver Cápsula do Tempo 💫</button>
-        <button class="btn-ghost" id="btnRever">Rever o Quiz</button>
       </footer>
     </div>
   </section>
 
-  <!-- CÁPSULA DO TEMPO -->
+  <!-- CÁPSULA -->
   <section class="capsula fade-in" id="section-capsula" hidden>
     <div class="container">
-      <h2 class="slide-up">Cápsula do Tempo</h2>
-      <p class="dedic-intro slide-up delay-1">
-        Cada foto, um pedacinho da nossa história.
-        Nossas viagens, risadas, e momentos que guardo com todo carinho. 💫
-      </p>
-
-      <!-- Grid preenchido via JS (intercala fotos e textos) -->
+      <h2>Cápsula do Tempo</h2>
+      <p class="dedic-intro">Cada foto, um pedacinho da nossa história. 💫</p>
       <div id="capsulaGrid" class="capsula-grid"></div>
-
       <footer class="assinatura">
-        <p>Essa é nossa história — e o melhor ainda está por vir. ❤️</p>
         <button class="btn-secondary" id="btnVoltarDedicatoria">Voltar à Dedicatória</button>
       </footer>
     </div>
   </section>
 
-  <!-- Áudio: fontes criadas via JS; preload ajuda -->
-  <audio id="bgAudio" preload="metadata" loop></audio>
-  <small id="audioStatus" style="display:block;text-align:center;margin-top:6px;color:#bbaec6"></small>
+  <button id="backToTop">↑</button>
+  <small id="audioStatus" style="display:block;text-align:center;color:#bbaec6"></small>
 
-  <script src="script.js"></script>
+  <script src="script.js?v=5"></script>
 </body>
 </html>
