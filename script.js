@@ -27,11 +27,11 @@ const daysCountEl = document.getElementById('daysCount');
 
 const bgAudio = document.getElementById('bgAudio');
 const btnPlay = document.getElementById('btnPlay');
-const audioStatus = document.getElementById('audioStatus');
+const floatingPlayer = document.getElementById('floatingPlayer');
 
 const backToTop = document.getElementById('backToTop');
 
-// ========= CONTAGEM DE DIAS =========
+// ========= CONTAGEM =========
 (function updateDaysCounter(){
   const start = new Date(START_DATE_ISO+"T00:00:00");
   const today = new Date();
@@ -39,56 +39,62 @@ const backToTop = document.getElementById('backToTop');
   daysCountEl.textContent = diff.toLocaleString('pt-BR');
 })();
 
-// ========= ÁUDIO: autoplay com fade-in =========
-function fadeIn(audio, durationMs=2500){
+// ========= ÁUDIO =========
+function setBtnIcons(){
+  const playing = !bgAudio.paused;
+  btnPlay && (btnPlay.textContent = playing ? "⏸️ Pausar música" : "▶️ Tocar música");
+  floatingPlayer.textContent = playing ? "⏸️" : "▶️";
+}
+
+function fadeIn(audio, ms=2000){
   audio.volume = 0;
-  const step = 50;
-  const inc = step / durationMs;
-  const timer = setInterval(()=>{
+  const step = 60, inc = step / ms;
+  const t = setInterval(()=>{
     if(audio.volume < 1){ audio.volume = Math.min(1, audio.volume + inc); }
-    else clearInterval(timer);
+    else clearInterval(t);
   }, step);
 }
 
-async function initAudio(){
+async function tryPlay(){
+  try{
+    await bgAudio.play();
+    fadeIn(bgAudio, 1200);
+  }catch(e){ /* mobile bloqueia autoplay até gesto */ }
+  setBtnIcons();
+}
+
+function toggleAudio(){
+  if(bgAudio.paused) { bgAudio.play(); fadeIn(bgAudio, 800); }
+  else bgAudio.pause();
+  setBtnIcons();
+}
+
+btnPlay?.addEventListener('click', toggleAudio);
+floatingPlayer?.addEventListener('click', toggleAudio);
+
+// tenta iniciar quando a página carrega
+document.addEventListener('DOMContentLoaded', () => {
   // garante src
-  if (!bgAudio.querySelector('source')) {
-    const s = document.createElement('source');
-    s.src = AUDIO_URL; s.type = 'audio/mpeg';
+  if(!bgAudio.querySelector('source')) {
+    const s = document.createElement('source'); s.src = AUDIO_URL; s.type="audio/mpeg";
     bgAudio.appendChild(s);
   }
-  // tenta autoplay
-  try {
-    await bgAudio.play();
-    fadeIn(bgAudio, 2500);
-    btnPlay.textContent = "⏸️ Pausar música";
-    audioStatus.textContent = `Áudio pronto: ${AUDIO_URL}`;
-  } catch (e) {
-    // navegadores móveis podem bloquear autoplay até um gesto do usuário
-    btnPlay.textContent = "▶️ Tocar música";
-    audioStatus.textContent = "Toque em 'Tocar música' para iniciar o som 💗";
-  }
+  tryPlay();
+});
 
-  btnPlay.addEventListener('click', async ()=>{
-    try{
-      if(bgAudio.paused){
-        await bgAudio.play();
-        fadeIn(bgAudio, 1200);
-        btnPlay.textContent = "⏸️ Pausar música";
-      } else {
-        bgAudio.pause();
-        btnPlay.textContent = "▶️ Tocar música";
-      }
-    }catch(err){ console.warn(err); }
-  });
-}
-initAudio();
-
-// ========= BOTÃO VOLTAR AO TOPO =========
+// ========= VOLTAR TOPO =========
 window.addEventListener('scroll', ()=>{
-  backToTop.style.display = window.scrollY > 400 ? 'flex' : 'none';
+  backToTop.style.display = window.scrollY > 420 ? 'flex' : 'none';
 });
 backToTop.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+
+// ========= REVEAL ON SCROLL (5 anos) =========
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting) e.target.classList.add('visible');
+  })
+},{threshold:.15});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
 
 // ========= QUIZ =========
 const questions = [
@@ -108,29 +114,10 @@ btnStart.addEventListener('click', () => {
   startQuiz();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
-btnNext.addEventListener('click', () => {
-  if (!hasAnswered) return;
-  idx++;
-  if (idx < questions.length) renderQuestion(); else finishQuiz();
-});
-btnRetry?.addEventListener('click', () => {
-  resetQuiz();
-  hero.hidden = true; result.hidden = true; dedic.hidden = true; capsula.hidden = true;
-  quiz.hidden = false;
-  renderQuestion();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-});
-btnVoltarInicio?.addEventListener('click', () => {
-  resetQuiz();
-  quiz.hidden = true; result.hidden = true; dedic.hidden = true; capsula.hidden = true;
-  hero.hidden = false;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-});
-btnRever?.addEventListener('click', () => {
-  resetQuiz();
-  dedic.hidden = true; capsula.hidden = true; hero.hidden = false;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-});
+btnNext.addEventListener('click', () => { if (!hasAnswered) return; idx++; (idx < questions.length) ? renderQuestion() : finishQuiz(); });
+btnRetry?.addEventListener('click', () => { resetQuiz(); hero.hidden = true; result.hidden = true; dedic.hidden = true; capsula.hidden = true; quiz.hidden = false; renderQuestion(); window.scrollTo({top:0,behavior:'smooth'}); });
+btnVoltarInicio?.addEventListener('click', () => { resetQuiz(); quiz.hidden = true; result.hidden = true; dedic.hidden = true; capsula.hidden = true; hero.hidden = false; window.scrollTo({top:0,behavior:'smooth'}); });
+btnRever?.addEventListener('click', () => { resetQuiz(); dedic.hidden = true; capsula.hidden = true; hero.hidden = false; window.scrollTo({top:0,behavior:'smooth'}); });
 
 function startQuiz(){ idx = 0; correctCount = 0; renderQuestion(); }
 function resetQuiz(){ idx = 0; correctCount = 0; hasAnswered = false; btnNext.disabled = true; feedback.textContent = ""; progressBar.style.width = "0%"; }
@@ -153,31 +140,21 @@ function handleAnswer(selectedIndex, btnEl){
   hasAnswered = true; btnNext.disabled = false;
   const isCorrect = selectedIndex === questions[idx].correctIndex;
   if (isCorrect){ correctCount++; btnEl.classList.add('correct'); feedback.textContent = "Resposta certa! 💖"; }
-  else {
-    btnEl.classList.add('incorrect');
-    [...optionsEl.children][questions[idx].correctIndex].classList.add('correct');
-    feedback.textContent = "Hmm… quase! A correta está marcada em verde. 😉";
-  }
+  else { btnEl.classList.add('incorrect'); [...optionsEl.children][questions[idx].correctIndex].classList.add('correct'); feedback.textContent = "Quase! A correta está marcada em verde. 😉"; }
 }
 function finishQuiz(){
   progressBar.style.width = "100%";
   quiz.hidden = true;
-  if (correctCount === questions.length){
-    // confettis simples
-    confettiPop();
-    dedic.hidden = false;
-  } else {
-    result.hidden = false;
-  }
+  (correctCount === questions.length) ? (confettiPop(), dedic.hidden = false) : (result.hidden = false);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ========= DEDICATÓRIA GALERIA =========
-const dedicatoriaBaseNames = ["1","2","3","4","5"];
+// ========= DEDICATÓRIA MINI GALERIA =========
 (function buildDedicatoria(){
   const gal = document.getElementById('galeriaDedicatoria');
+  const base = ["1","2","3","4","5"];
   gal.innerHTML = "";
-  dedicatoriaBaseNames.forEach((name, index) => {
+  base.forEach((name, index) => {
     const img = document.createElement('img');
     img.alt = `Norberto & Letícia — foto ${index+1}`;
     attachSmartSrc(img, `assets/fotos/${name}`);
@@ -185,57 +162,38 @@ const dedicatoriaBaseNames = ["1","2","3","4","5"];
   });
 })();
 
-// ========= CÁPSULA =========
+// ========= CÁPSULA (com legendas corrigidas) =========
 const capsulaItems = [
-  {img:"Viagem1", badge:"Penha / Beto Carrero"},
-  {img:"Viagem2", badge:"Planetário & Praia"},
-  {text:"Aqui temos fotos da nossa viagem pra Penha, onde nos divertimos como duas crianças no Beto Carreiro, pegamos uma prainha, conhecemos o céu pelo planetário de BC e o melhor, comemos muito nos Cowboys da Pizza!"},
-  {img:"Viagem3", badge:"Rio de Janeiro"},
-  {text:"Não podia deixar passar nossa ida ao Rio de janeiro, onde vivemos muito em pouco tempo, quem diria hein, Rock in Rio, Asa delta, Baile de favela no Vidigal e o melhor de todos, Maracanã ver o nosso mengão! (Nosso hein!)."},
-  {img:"Viagem4", badge:"Goiás"},
-  {text:"Tem também fotos nossa curtindo um joguinho pelo seu país Goias! Onde fizemos compras, comemos muito e nos divertimos como sempre."},
-  {img:"Viagem5", badge:"Avaré"},
-  {img:"Viagem6", badge:"Momentos ❤️"},
-  {text:"Pra finalizar, tem foto nossa no nosso país original, Avaré, curtindo uma Emapinha, pois não importa o lugar, o importante é estar com você."}
+  {img:"Viagem1", badge:"Cowboys da Pizza — Penha"},
+  {img:"Viagem2", badge:"Passeio de bug — Penha"},
+  {img:"Viagem3", badge:"Cristo — RJ"},
+  {img:"Viagem4", badge:"Rock in Rio"},
+  {img:"Viagem5", badge:"Serra Dourada — Goiânia"},
+  {img:"Viagem6", badge:"Emapa — Avaré"}
 ];
 (function buildCapsula(){
   const grid = document.getElementById('capsulaGrid');
   grid.innerHTML = "";
   capsulaItems.forEach(item => {
-    if (item.img){
-      const wrap = document.createElement('div');
-      wrap.className = 'card-photo';
-      const img = document.createElement('img');
-      attachSmartSrc(img, `assets/fotos/${item.img}`);
-      wrap.appendChild(img);
-      if(item.badge){
-        const badge = document.createElement('div');
-        badge.className = 'photo-badge';
-        badge.textContent = item.badge;
-        wrap.appendChild(badge);
-      }
-      grid.appendChild(wrap);
-    } else if (item.text){
-      const wrap = document.createElement('div');
-      wrap.className = 'card-text';
-      const p = document.createElement('p');
-      p.textContent = item.text;
-      wrap.appendChild(p);
-      grid.appendChild(wrap);
-    }
+    const wrap = document.createElement('div');
+    wrap.className = 'card-photo reveal';
+    const img = document.createElement('img');
+    attachSmartSrc(img, `assets/fotos/${item.img}`);
+    wrap.appendChild(img);
+
+    const badge = document.createElement('div');
+    badge.className = 'photo-badge';
+    badge.textContent = item.badge;
+    wrap.appendChild(badge);
+
+    grid.appendChild(wrap);
+    observer.observe(wrap);
   });
 })();
 
-btnCapsula?.addEventListener('click', () => {
-  dedic.hidden = true;
-  capsula.hidden = false;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-});
-btnVoltarDedicatoria?.addEventListener('click', () => {
-  capsula.hidden = true;
-  dedic.hidden = false;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-});
+// navegação dedicatória <-> cápsula
+btnCapsula?.addEventListener('click', () => { dedic.hidden = true; capsula.hidden = false; window.scrollTo({top:0,behavior:'smooth'}); });
+btnVoltarDedicatoria?.addEventListener('click', () => { capsula.hidden = true; dedic.hidden = false; window.scrollTo({top:0,behavior:'smooth'}); });
 
 // ========= UTILS =========
 function attachSmartSrc(imgEl, basePath){
@@ -249,7 +207,7 @@ function attachSmartSrc(imgEl, basePath){
   tryNext();
 }
 
-// confetti simples (sem lib)
+// confetti simples
 function confettiPop(){
   const emojis = ["🎉","✨","💖","💫","🎊","🥳"];
   for(let i=0;i<24;i++){
@@ -261,13 +219,11 @@ function confettiPop(){
     s.style.fontSize = (20 + Math.random()*14)+"px";
     s.style.animation = `fall ${2+Math.random()*1.5}s linear forwards`;
     s.style.pointerEvents = "none";
+    s.style.zIndex = 80;
     document.body.appendChild(s);
     setTimeout(()=>s.remove(), 3500);
   }
 }
-
 const style = document.createElement('style');
-style.textContent = `
-@keyframes fall { to { transform: translateY(110vh) rotate(360deg); opacity:.9 } }
-`;
+style.textContent = `@keyframes fall { to { transform: translateY(110vh) rotate(360deg); opacity:.9 } }`;
 document.head.appendChild(style);
